@@ -2,9 +2,53 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application/photo_screen.dart';
+import 'package:flutter_application/question_list.dart';
+import 'package:flutter_application/quiz_screen.dart';
+import 'package:flutter_application/result_screen.dart';
 
 void main() {
-  runApp(const MaterialApp(home: NavigatorApp()));
+  runApp(const MaterialApp(home: MainApp()));
+}
+
+class MainApp extends StatefulWidget {
+  const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MainApp> {
+  int questionIndex = 0;
+  int totalScore = 0;
+
+  void answerPressed(int score){
+    // NOTE : 여기서도 변경가능한데 무슨차이인지
+    //++questionIndex;
+    setState(() {
+      ++questionIndex;
+    });
+    totalScore += score;
+    print(totalScore);
+  }
+
+  void resetQuiz(){
+    setState(() {
+      questionIndex = 0;
+    });
+    totalScore = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Quiz App"),
+      ),
+      body: questionIndex < questionList.length ?
+        QuizScreen(answerPressed: answerPressed, questionIndex: questionIndex) :
+        ResultScreen(totalScore: totalScore, resetQuiz: resetQuiz,),
+    );
+  }
 }
 
 class NavigatorApp extends StatelessWidget {
